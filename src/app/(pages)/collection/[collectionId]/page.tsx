@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { use } from "react";
+import copy from 'clipboard-copy';
 
 
 export default function CollectionPage({ params }: { params: Promise<{ collectionId: string }> }) {
@@ -21,6 +22,17 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
     { id: 3, type: "video", name: "10 best ways to find new habits", icon: "▶️" },
     { id: 4, type: "pdf", name: "Connect with your mind.pdf", icon: "📄" },
   ])
+const [isCopied, setisCopied] = useState<boolean>(false);
+
+   //Methods
+
+  // handle copy
+    const handleCopy = async () =>{
+        await copy("https://wetrocloud.com");
+        setisCopied(true);
+        setTimeout(() => setisCopied(false), 2000); // Reset the copied state after 2 seconds
+
+    }
 
   //Check for collection ID
   useEffect(() => {
@@ -53,8 +65,8 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
             <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
               View chat
             </button>
-            <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
-              Copy chat link
+            <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100" onClick={handleCopy}>
+             {isCopied ? ` Copied !! ` : `Copy chat link`}
             </button>
             <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
               ✏️ Modify
