@@ -34,6 +34,11 @@ const [isCopied, setisCopied] = useState<boolean>(false);
 
     }
 
+    // handle copy
+    const viewChatPage = async () =>{
+        window.open("/chat/1234", "_blank");
+    }
+
   //Check for collection ID
   useEffect(() => {
     if(!collectionId){
@@ -62,7 +67,7 @@ const [isCopied, setisCopied] = useState<boolean>(false);
             <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
               + Add resource
             </button>
-            <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
+            <button onClick={()=>viewChatPage()} className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
               View chat
             </button>
             <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100" onClick={handleCopy}>
