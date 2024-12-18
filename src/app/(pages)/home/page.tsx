@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
+import AddCollectionModal from "@/app/components/AddCollectionModal";
 import HeaderComponent from "@/app/components/Header";
 import SidebarComponent from "@/app/components/Sidebar";
 import Link from "next/link";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 // import { useEffect, useState } from "react";
 
 export default function HomePage() {
 
+  //Data
   const [collectionList, setcollectionList] = useState<any>([
     { id: "111", title: "Staying away from addiction", resources: 3 },
     { id: "222", title: "Report analysis", resources: 4 },
@@ -16,6 +19,7 @@ export default function HomePage() {
     { id: "444", title: "Extra collections", resources: 3 },
     { id: "555", title: "Extra collections", resources: 4 },
   ])
+  const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
 
 
   return (
@@ -33,7 +37,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {/* Add Collection Box */}
-          <div className="flex items-center justify-center h-40 border-2 border-gray-300 border-dashed rounded-md">
+          <div onClick={()=> setisAddCollectionModal(true)} className="flex items-center justify-center h-40 border-2 border-gray-300 border-dashed rounded-md">
             <div className="text-center">
               <div className="text-4xl text-gray-400">+</div>
               <p className="text-gray-600">Add collection</p>
@@ -41,7 +45,7 @@ export default function HomePage() {
           </div>
 
           {/* Render Collections */}
-          {collectionList.map((collection : any) => (
+          {collectionList.length && collectionList.map((collection : any) => (
             <Link  key={collection.id} href={`/collection/${collection.id}`}>
               <div
                 className="p-4 bg-white shadow rounded-md border border-gray-200 h-40 truncate"
@@ -61,6 +65,13 @@ export default function HomePage() {
 
       </div>
 
+    {
+        isAddCollectionModal &&
+        createPortal(
+            <AddCollectionModal isAddCollectionModal={isAddCollectionModal} setisAddCollectionModal={setisAddCollectionModal}/>,
+            document.body
+    )}
     </main>
+    
   )
 }
