@@ -10,6 +10,7 @@ import { use } from "react";
 import copy from 'clipboard-copy';
 import AddCollectionModal from "@/app/components/AddCollectionModal";
 import { createPortal } from "react-dom";
+import RemoveResourceModal from "@/app/components/RemoveResourceModal";
 
 
 export default function CollectionPage({ params }: { params: Promise<{ collectionId: string }> }) {
@@ -24,9 +25,11 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
     { id: 3, type: "video", name: "10 best ways to find new habits", icon: "▶️" },
     { id: 4, type: "pdf", name: "Connect with your mind.pdf", icon: "📄" },
   ])
-const [isCopied, setisCopied] = useState<boolean>(false);
-const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
-const [collectionName, setcollectionName] = useState<string>("Staying away from addiction")
+  const [isCopied, setisCopied] = useState<boolean>(false);
+  const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
+  const [isRemoveResourceModal, setisRemoveResourceModal] = useState<boolean>(false)
+  const [collectionName, setcollectionName] = useState<string>("Staying away from addiction")
+  const [activeResource, setactiveResource] = useState<any>({})
 
    //Methods
 
@@ -37,6 +40,15 @@ const [collectionName, setcollectionName] = useState<string>("Staying away from 
         setTimeout(() => setisCopied(false), 2000); // Reset the copied state after 2 seconds
 
     }
+
+    // handle remove resource
+    const handleRemoveResource = (id : any) => {
+      
+      setresourceList(resourceList.filter(resource => resource.id !== id));
+      setactiveResource({});
+      setisRemoveResourceModal(false);
+    }
+
 
     // handle copy
     const viewChatPage = async () =>{
@@ -96,7 +108,10 @@ const [collectionName, setcollectionName] = useState<string>("Staying away from 
                   <span className="text-xl">{resource.icon}</span>
                   <span className="text-gray-700">{resource.name}</span>
                 </div>
-                <button className="text-gray-400 hover:text-gray-600">
+                <button onClick={()=> {
+                  setactiveResource({id : resource.id, resourceName : resource.name})
+                  setisRemoveResourceModal(true);
+                }} className="text-gray-400 hover:text-gray-600">
                   ✕
                 </button>
               </li>
@@ -111,10 +126,18 @@ const [collectionName, setcollectionName] = useState<string>("Staying away from 
 
         {/* Edit collection */}
         {
-               isAddCollectionModal &&
-               createPortal(
-                   <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName={collectionName} setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={setcollectionName}/>,
-                   document.body
+            isAddCollectionModal &&
+            createPortal(
+                <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName={collectionName} setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={setcollectionName}/>,
+                document.body
+        )}
+
+        {/* Remove Resource */}
+        {
+            isRemoveResourceModal &&
+            createPortal(
+                <RemoveResourceModal isRemoveResourceModal={isRemoveResourceModal} activeResource={activeResource} setisRemoveResourceModal={setisRemoveResourceModal} handleRemoveResource={handleRemoveResource}/>,
+                document.body
         )}
 
     </main>
