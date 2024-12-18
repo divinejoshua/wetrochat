@@ -12,13 +12,13 @@
     font-weight: 500;
   }
   
-  .auth-screen-bg{
-    height: 100vh;
-    width: 50%;
-    position: fixed;
-    top: 0;
-    background-image: url('../images/auth-bg.png');
-  }
+  // .auth-screen-bg{
+  //   height: 100vh;
+  //   width: 50%;
+  //   position: fixed;
+  //   top: 0;
+  //   background-image: url('../images/auth-bg.png');
+  // }
   
   .form-screen{
     margin-left: 50%;
@@ -88,6 +88,10 @@
       margin-top: 90px;
       margin-left: 300px;
   }
+  .main-collection-page{
+    margin-top: 60px;
+    margin-left: 300px;
+}
   
   .delete-api-icon{
     width: 15px;
@@ -103,8 +107,8 @@
   .circle-loader-icon{
     width: 20px;
   }
-  
-  
+
+
   //==============Modal =======
   .modal {
       display: none;
