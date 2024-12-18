@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { use } from "react";
 import copy from 'clipboard-copy';
+import AddCollectionModal from "@/app/components/AddCollectionModal";
+import { createPortal } from "react-dom";
 
 
 export default function CollectionPage({ params }: { params: Promise<{ collectionId: string }> }) {
@@ -23,6 +25,8 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
     { id: 4, type: "pdf", name: "Connect with your mind.pdf", icon: "📄" },
   ])
 const [isCopied, setisCopied] = useState<boolean>(false);
+const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
+const [collectionName, setcollectionName] = useState<string>("Staying away from addiction")
 
    //Methods
 
@@ -62,7 +66,7 @@ const [isCopied, setisCopied] = useState<boolean>(false);
         <div className="main-collection-page px-10 mb-20">
           <Link href={"/home"} className="text-blue-500 mb-12">{`< Go Home`}</Link>
         <div className="flex flex-col mb-6">
-          <h1 className="text-2xl font-bold mb-4">Staying away from addiction</h1>
+          <h1 className="text-2xl font-bold mb-4">{collectionName}</h1>
           <div className="flex gap-4">
             <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
               + Add resource
@@ -73,7 +77,7 @@ const [isCopied, setisCopied] = useState<boolean>(false);
             <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100" onClick={handleCopy}>
              {isCopied ? ` Copied !! ` : `Copy chat link`}
             </button>
-            <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
+            <button onClick={()=>setisAddCollectionModal(true)} className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
               ✏️ Modify
             </button>
           </div>
@@ -103,6 +107,15 @@ const [isCopied, setisCopied] = useState<boolean>(false);
 
 
        </div>
+
+
+        {/* Edit collection */}
+        {
+               isAddCollectionModal &&
+               createPortal(
+                   <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName={collectionName} setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={setcollectionName}/>,
+                   document.body
+        )}
 
     </main>
   )

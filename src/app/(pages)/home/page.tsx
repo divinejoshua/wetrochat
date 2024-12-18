@@ -65,6 +65,7 @@ export default function HomePage() {
 
       </div>
 
+    {/* Add collection modal */}
     {
         isAddCollectionModal &&
         createPortal(

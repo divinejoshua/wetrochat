@@ -2,11 +2,11 @@
 "use client"
 import Image from 'next/image'
 import closeIcon from '@/app/assets/images/close-add-resource-modal-icon.png'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import circleLoaderIcon from "@/app/assets/images/circle-loader-icon.svg"
 
 
-export default function AddCollectionModal({isAddCollectionModal, setisAddCollectionModal} :{ isAddCollectionModal : boolean,  setisAddCollectionModal : Function}) {
+export default function AddCollectionModal({isAddCollectionModal, existingCollectionName, setisAddCollectionModal, setExistingCollection} :{ isAddCollectionModal : boolean, existingCollectionName : string, setisAddCollectionModal : Function, setExistingCollection : Function}) {
 
     //Data
     const [loading, setloading] = useState<boolean>(false)
@@ -15,11 +15,17 @@ export default function AddCollectionModal({isAddCollectionModal, setisAddCollec
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if(!collectionName) return
+        if(!collectionName.trim().length) return
         setloading(true);
         try {
-
+          if(existingCollectionName){
+            setExistingCollection(collectionName)
+          }
           console.log("Added collection name")
           setisAddCollectionModal(false)
+
+         
             // Add your form submission logic here
         } catch (error) {
             seterrorMessage("An error occurred");
@@ -28,6 +34,12 @@ export default function AddCollectionModal({isAddCollectionModal, setisAddCollec
             setcollectionName("")
         }
     };
+
+  useEffect(() => {
+    if(existingCollectionName){
+      setcollectionName(existingCollectionName)
+    }
+  }, [])
 
 
   return (
@@ -63,7 +75,7 @@ export default function AddCollectionModal({isAddCollectionModal, setisAddCollec
             <p className="mt-5 text-red-500">{errorMessage}</p>
 
 
-            <button type='submit' disabled={loading} className="float-right ml-4 mt-5 rounded bg-default text-white py-2 px-5 shadow-sm text-sm">Add</button>
+            <button type='submit' disabled={loading} className="float-right ml-4 mt-5 rounded bg-default text-white py-2 px-5 shadow-sm text-sm">{existingCollectionName ? 'Add' : 'Update'}</button>
             {/* Loader image */}
             {loading &&
             <Image
