@@ -1,30 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
+import { addCollection, getCollections } from "@/app/actions";
 import AddCollectionModal from "@/app/components/AddCollectionModal";
 import HeaderComponent from "@/app/components/Header";
 import SidebarComponent from "@/app/components/Sidebar";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 // import { useEffect, useState } from "react";
 
 export default function HomePage() {
 
   //Data
-  const [collectionList, setcollectionList] = useState<any>([
-    { id: "111", title: "Staying away from addiction", resources: 3 },
-    { id: "222", title: "Report analysis", resources: 4 },
-    { id: "333", title: "Extra collections", resources: 3 },
-    { id: "444", title: "Extra collections", resources: 3 },
-    { id: "555", title: "Extra collections", resources: 4 },
-  ])
+  const [collectionList, setcollectionList] = useState<any>([])
   const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
 
+  useEffect(() => {
+    async function fetchCollections() {
+      const collectionList = await getCollections()
+      setcollectionList(collectionList)
+    }
+    fetchCollections()
+
+    // Create a new collection
+    // async function createCollection() {
+    //   const collectionList = await addCollection()
+    //   setisAddCollectionModal(false)
+    // }
+    // createCollection()
+  }, [])
 
   return (
     <main className="mx-auto main-container">
-
       <div className="sidebar">
         <SidebarComponent/>
       </div>
@@ -51,7 +59,7 @@ export default function HomePage() {
                 className="p-4 bg-white shadow rounded-md border border-gray-200 h-40 truncate"
               >
                 <h2 className="text-lg font-medium text-gray-800">
-                  {collection.title}
+                  {collection.collection_name}
                 </h2>
                 <p className="text-gray-500 text-sm">
                   {collection.resources} resources
