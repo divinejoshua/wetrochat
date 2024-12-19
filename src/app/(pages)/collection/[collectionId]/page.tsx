@@ -11,6 +11,7 @@ import copy from 'clipboard-copy';
 import AddCollectionModal from "@/app/components/AddCollectionModal";
 import { createPortal } from "react-dom";
 import RemoveResourceModal from "@/app/components/RemoveResourceModal";
+import AddResourceModal from "@/app/components/AddResourceModal";
 
 
 export default function CollectionPage({ params }: { params: Promise<{ collectionId: string }> }) {
@@ -28,6 +29,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
   const [isCopied, setisCopied] = useState<boolean>(false);
   const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
   const [isRemoveResourceModal, setisRemoveResourceModal] = useState<boolean>(false)
+  const [isAddResourceModal, setisAddResourceModal] = useState<boolean>(false)
   const [collectionName, setcollectionName] = useState<string>("Staying away from addiction")
   const [activeResource, setactiveResource] = useState<any>({})
 
@@ -80,7 +82,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
         <div className="flex flex-col mb-6">
           <h1 className="text-2xl font-bold mb-4">{collectionName}</h1>
           <div className="flex gap-4">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            <button onClick={()=>setisAddResourceModal(true)} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
               + Add resource
             </button>
             <button onClick={()=>viewChatPage()} className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
@@ -123,6 +125,13 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
 
        </div>
 
+        {/* Add resource modal */}
+        {
+            isAddResourceModal &&
+            createPortal(
+                <AddResourceModal isAddResourceModal={isAddResourceModal} setisAddResourceModal={setisAddResourceModal}/>,
+                document.body
+        )}
 
         {/* Edit collection */}
         {
