@@ -68,17 +68,18 @@ export async function isValidOrganisation(organisationId: string) {
 export async function addCollection(formData: FormData){
     const collection_name = formData.get('collection_name')
     const apiKey = formData.get('apiKey')
+    const collection_id = await createCollection(apiKey)
     const collectionData = {
         user_id: '123',// This would be replaced by the actual user id from authentication
         collection_name: validateCollectionName(collection_name),
-        collection_id: await createCollection(apiKey),
+        collection_id: collection_id,
         created_at: serverTimestamp(),
     }
-    // Create a collection from the database instance
-    const collectionRef = collection(db, 'collections')
-    // Add the collection to the database
-    const docRef = await addDoc(collectionRef, collectionData)
-    // redirect(`/create/${docRef.id}`) redirect the user if necessary
+    // Create a document with collection_id as the document ID
+    const docRef = doc(db, 'collections', collection_id)
+    // Set the collection data
+    await setDoc(docRef, collectionData)
+    return collection_id
 }
 
 export async function getCollections(){
