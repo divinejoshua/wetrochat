@@ -12,6 +12,7 @@ import AddCollectionModal from "@/app/components/AddCollectionModal";
 import { createPortal } from "react-dom";
 import RemoveResourceModal from "@/app/components/RemoveResourceModal";
 import AddResourceModal from "@/app/components/AddResourceModal";
+import DeleteCollectionModal from "@/app/components/DeleteCollectionModal";
 
 
 export default function CollectionPage({ params }: { params: Promise<{ collectionId: string }> }) {
@@ -31,6 +32,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
   const [isRemoveResourceModal, setisRemoveResourceModal] = useState<boolean>(false)
   const [isAddResourceModal, setisAddResourceModal] = useState<boolean>(false)
   const [collectionName, setcollectionName] = useState<string>("Staying away from addiction")
+  const [isDeleteCollectioneModal, setisDeleteCollectioneModal] = useState<boolean>(false)
   const [activeResource, setactiveResource] = useState<any>({})
 
    //Methods
@@ -94,6 +96,9 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
             <button onClick={()=>setisAddCollectionModal(true)} className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
               ✏️ Modify
             </button>
+            <button onClick={() => setisDeleteCollectioneModal(true)} className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100">
+              🗑️ Delete collection
+            </button>
           </div>
         </div>
 
@@ -146,6 +151,14 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
             isRemoveResourceModal &&
             createPortal(
                 <RemoveResourceModal isRemoveResourceModal={isRemoveResourceModal} activeResource={activeResource} setisRemoveResourceModal={setisRemoveResourceModal} handleRemoveResource={handleRemoveResource}/>,
+                document.body
+        )}
+
+        {/* Delete Collection */}
+        {
+            isDeleteCollectioneModal &&
+            createPortal(
+                <DeleteCollectionModal isDeleteCollectioneModal={isDeleteCollectioneModal} collectionId={collectionId} setisDeleteCollectioneModal={setisDeleteCollectioneModal}/>,
                 document.body
         )}
 
