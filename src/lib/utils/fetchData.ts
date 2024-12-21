@@ -22,7 +22,8 @@ export async function insertResource(collectionId:string,resource:string,type:st
 }
 
 // Query a collection
-export async function queryCollection(collectionId:string,query:string){
+export async function queryCollection(collectionId:any,query:string){
+    if (typeof collectionId === 'string') {
     const url = `${axiosInstance.defaults.baseURL}/query/`
     const payload = {
         collection_id:collectionId,
@@ -31,8 +32,10 @@ export async function queryCollection(collectionId:string,query:string){
     const response = await axiosInstance.post(url,payload)
     console.log(response.data)
     return response.data
+    }
+    return null
 }
-
+queryCollection("fdfaebde-a8e6-4b63-aa3d-1263a743e13e","Who is the author of this article")
 // List all collections
 export async function listCollections(){
     const url = `${axiosInstance.defaults.baseURL}/collection/`
