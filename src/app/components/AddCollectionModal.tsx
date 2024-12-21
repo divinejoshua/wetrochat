@@ -4,6 +4,7 @@ import Image from 'next/image'
 import closeIcon from '@/app/assets/images/close-add-resource-modal-icon.png'
 import { useEffect, useState } from 'react';
 import circleLoaderIcon from "@/app/assets/images/circle-loader-icon.svg"
+import { addCollection } from '../actions';
 
 
 export default function AddCollectionModal({isAddCollectionModal, existingCollectionName, setisAddCollectionModal, setExistingCollection} :{ isAddCollectionModal : boolean, existingCollectionName : string, setisAddCollectionModal : Function, setExistingCollection : Function}) {
@@ -21,6 +22,8 @@ export default function AddCollectionModal({isAddCollectionModal, existingCollec
         try {
           if(existingCollectionName){
             setExistingCollection(collectionName)
+          } else{
+            createCollection()
           }
           console.log("Added collection name")
           setisAddCollectionModal(false)
@@ -35,6 +38,15 @@ export default function AddCollectionModal({isAddCollectionModal, existingCollec
         }
     };
 
+
+    // Create collection on the server
+    async function createCollection() {
+        const formData = new FormData();
+        formData.append('collection_name', collectionName);
+        const collectionList = await addCollection(formData)
+        // setisAddCollectionModal(false)
+    }
+    
   useEffect(() => {
     if(existingCollectionName){
       setcollectionName(existingCollectionName)

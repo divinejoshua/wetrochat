@@ -15,7 +15,6 @@ export default function HomePage() {
   //Data
   const [collectionList, setcollectionList] = useState<any>([])
   const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
-
   useEffect(() => {
     async function fetchCollections() {
       const collectionList = await getCollections()
@@ -24,11 +23,7 @@ export default function HomePage() {
     fetchCollections()
 
     // Create a new collection
-    // async function createCollection() {
-    //   const collectionList = await addCollection()
-    //   setisAddCollectionModal(false)
-    // }
-    // createCollection()
+   
   }, [])
 
   return (
@@ -53,7 +48,7 @@ export default function HomePage() {
           </div>
 
           {/* Render Collections */}
-          {collectionList.length && collectionList.map((collection : any) => (
+          {collectionList.length > 0 && collectionList.map((collection : any) => (
             <Link  key={collection.id} href={`/collection/${collection.id}`}>
               <div
                 className="p-4 bg-white shadow rounded-md border border-gray-200 h-40 truncate"

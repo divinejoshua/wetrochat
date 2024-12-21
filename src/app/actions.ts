@@ -1,8 +1,38 @@
 import { createCollection } from "@/lib/utils/fetchData"
-import { addDoc, collection, getDocs, serverTimestamp } from "firebase/firestore"
+import { addDoc, collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase/clientApp"
 import { validateCollectionName } from "@/lib/validations/validation"
 
+
+// Get or Create a user
+export async function getOrCreateUser(userDetails: any) {
+    // Get the user from the database
+    const user = {
+        id: userDetails.organisationId,
+        apiKey: userDetails.apiKey,
+    }
+
+    // Check if user exists in the database
+    const userRef = collection(db, 'users')
+    const userSnapshot = await getDocs(userRef)
+    const docRef = doc(db, 'users', user.id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        // Return the existing user if found
+        return {
+            ...docSnap.data() as object,
+            id: docSnap.id,
+        }
+    } else {
+        // Add user to the database if it doesn't exist
+        await setDoc(docRef, {
+            ...user,
+            created_at: serverTimestamp(),
+        })
+        return user
+    }
+}
 
 // Create server action to add post to the database
 export async function addCollection(formData: FormData){
