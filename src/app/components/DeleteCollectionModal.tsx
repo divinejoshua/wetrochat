@@ -5,6 +5,7 @@ import closeIcon from '@/app/assets/images/close-add-resource-modal-icon.png'
 import { useEffect, useState } from 'react';
 import circleLoaderIcon from "@/app/assets/images/circle-loader-icon.svg"
 import { useRouter } from 'next/navigation';
+import { deleteCollectionById } from '../actions';
 
 
 export default function DeleteCollectionModal({isDeleteCollectioneModal, collectionId, setisDeleteCollectioneModal} :{ isDeleteCollectioneModal : boolean, collectionId : string, setisDeleteCollectioneModal : Function}) {
@@ -19,8 +20,8 @@ export default function DeleteCollectionModal({isDeleteCollectioneModal, collect
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-            // handleRemoveResource(activeResource.id)
-            console.log("Removed collection")
+            deleteCollectionById(collectionId)
+            router.replace("/home")
             // Add your form submission logic here
         } catch (error) {
             seterrorMessage("An error occurred");

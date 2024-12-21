@@ -1,5 +1,5 @@
 import { createCollection } from "@/lib/utils/fetchData"
-import { addDoc, collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase/clientApp"
 import { validateCollectionName } from "@/lib/validations/validation"
 import axios from "axios"
@@ -81,6 +81,19 @@ export async function addCollection(formData: FormData){
     // Set the collection data
     await setDoc(docRef, collectionData)
     return collection_id
+}
+
+// Delete a collection by ID
+export async function deleteCollectionById(collectionId: string) {
+    const docRef = doc(db, 'collections', collectionId);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+        throw new Error('Collection not found');
+    }
+
+    await deleteDoc(docRef);
+    return { message: 'Collection deleted successfully' };
 }
 
 export async function getCollections(){
