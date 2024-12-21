@@ -8,7 +8,7 @@ import { addCollection, getApiKey } from '../actions';
 import axiosInstance from '@/lib/utils/axiosConfig';
 
 
-export default function AddCollectionModal({isAddCollectionModal, existingCollectionName, setisAddCollectionModal, setExistingCollection} :{ isAddCollectionModal : boolean, existingCollectionName : string, setisAddCollectionModal : Function, setExistingCollection : Function}) {
+export default function AddCollectionModal({isAddCollectionModal, existingCollectionName, setisAddCollectionModal, setExistingCollection, fetchCollections} :{ isAddCollectionModal : boolean, existingCollectionName : string, setisAddCollectionModal : Function, setExistingCollection : Function, fetchCollections: Function}) {
 
     //Data
     const [loading, setloading] = useState<boolean>(false)
@@ -25,7 +25,10 @@ export default function AddCollectionModal({isAddCollectionModal, existingCollec
           if(existingCollectionName){
             setExistingCollection(collectionName)
           } else{
-            createCollection()
+            createCollection().then(()=>{
+              fetchCollections()
+            })
+            
           }
           console.log("Added collection name")
           setisAddCollectionModal(false)

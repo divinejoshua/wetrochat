@@ -137,7 +137,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
         {
             isAddCollectionModal &&
             createPortal(
-                <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName={collectionName} setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={setcollectionName}/>,
+                <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName={collectionName} setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={setcollectionName} fetchCollections={()=>{}}/>,
                 document.body
         )}
 

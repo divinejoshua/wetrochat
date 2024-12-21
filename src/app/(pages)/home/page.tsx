@@ -76,7 +76,7 @@ export default function HomePage() {
     {
         isAddCollectionModal &&
         createPortal(
-            <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName="" setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={() => {}} />,
+            <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName="" setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={() => {}}  fetchCollections={fetchCollections}/>,
             document.body
     )}
     </main>
