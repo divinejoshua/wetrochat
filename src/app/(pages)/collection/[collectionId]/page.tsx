@@ -13,6 +13,7 @@ import { createPortal } from "react-dom";
 import RemoveResourceModal from "@/app/components/RemoveResourceModal";
 import AddResourceModal from "@/app/components/AddResourceModal";
 import DeleteCollectionModal from "@/app/components/DeleteCollectionModal";
+import { editCollectionName, getCollectionById } from "@/app/actions";
 
 
 export default function CollectionPage({ params }: { params: Promise<{ collectionId: string }> }) {
@@ -31,7 +32,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
   const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
   const [isRemoveResourceModal, setisRemoveResourceModal] = useState<boolean>(false)
   const [isAddResourceModal, setisAddResourceModal] = useState<boolean>(false)
-  const [collectionName, setcollectionName] = useState<string>("Staying away from addiction")
+  const [collectionName, setcollectionName] = useState<string>("Loading...")
   const [isDeleteCollectioneModal, setisDeleteCollectioneModal] = useState<boolean>(false)
   const [activeResource, setactiveResource] = useState<any>({})
 
@@ -60,11 +61,19 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
         window.open(`/chat/${collectionId}`, "_blank");
     }
 
+    const getCollection = async () => {
+      let collectionDetails = await getCollectionById(collectionId)
+      setcollectionName(collectionDetails.collection_name)
+    }
+    
   //Check for collection ID
   useEffect(() => {
     if(!collectionId){
         router.replace("/")
     }
+
+    getCollection()
+
 
     return () => {
     }
@@ -143,7 +152,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
         {
             isAddCollectionModal &&
             createPortal(
-                <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName={collectionName} setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={setcollectionName} fetchCollections={()=>{}}/>,
+                <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName={collectionName} collectionId={collectionId} setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={setcollectionName} fetchCollections={()=>{}}/>,
                 document.body
         )}
 

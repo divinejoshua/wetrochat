@@ -110,3 +110,37 @@ export async function getCollections(){
     })
     return collections
 }
+// Get collection details by ID
+export async function getCollectionById(collectionId: string) {
+    const docRef = doc(db, 'collections', collectionId);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+        throw new Error('Collection not found');
+    }
+
+    return {
+        ...docSnap.data(),
+        id: docSnap.id,
+        collection_name: docSnap.data().collection_name,
+        created_at: docSnap.data().created_at?.toDate().toISOString(),
+    };
+}
+
+
+// Edit collection name by ID
+export async function editCollectionName(collectionId: string, newCollectionName: string) {
+    const docRef = doc(db, 'collections', collectionId);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+        throw new Error('Collection not found');
+    }
+
+    await setDoc(docRef, {
+        collection_name: validateCollectionName(newCollectionName),
+        updated_at: serverTimestamp(),
+    }, { merge: true });
+
+    return { message: 'Collection name updated successfully' };
+}
