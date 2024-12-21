@@ -39,7 +39,8 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
 
   // handle copy
     const handleCopy = async () =>{
-        await copy("https://wetrocloud.com");
+        const currentDomain = window.location.origin;
+        await copy(`${currentDomain}/chat/${collectionId}`);
         setisCopied(true);
         setTimeout(() => setisCopied(false), 2000); // Reset the copied state after 2 seconds
 
@@ -56,7 +57,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
 
     // handle copy
     const viewChatPage = async () =>{
-        window.open("/chat/1234", "_blank");
+        window.open(`/chat/${collectionId}`, "_blank");
     }
 
   //Check for collection ID
