@@ -19,7 +19,6 @@ export async function getOrCreateUser(userDetails: any) {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        // Return the existing user if found
         return {
             ...docSnap.data() as object,
             id: docSnap.id,
@@ -32,6 +31,29 @@ export async function getOrCreateUser(userDetails: any) {
         })
         return user
     }
+
+}
+
+// Get API key from firebase
+export async function getApiKey(userId: string) {
+    const docRef = doc(db, 'users', userId);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+        const userData = docSnap.data();
+        return userData.apiKey;
+    }
+    return "";
+}
+
+// Check if organisation ID exists and is valid
+export async function isValidOrganisation(organisationId: string) {
+    if (!organisationId) return false;
+    
+    const docRef = doc(db, 'users', organisationId);
+    const docSnap = await getDoc(docRef);
+    
+    return docSnap.exists();
 }
 
 // Create server action to add post to the database

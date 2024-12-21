@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtDecode } from "jwt-decode";
 import { getOrCreateUser } from "@/app/actions";
+import { generateRandomText } from "@/app/utils/generic";
 
 // POST request
 export async function POST (req: NextRequest, res : NextResponse) {
@@ -30,8 +31,11 @@ export async function POST (req: NextRequest, res : NextResponse) {
         });
     }
 
+
+
     //Data response
     let data = response
+    data.code = generateRandomText()+organisationId
 
     //Response
     return NextResponse.json(data, {
