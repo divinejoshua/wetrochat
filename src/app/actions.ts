@@ -2,6 +2,7 @@ import { createCollection } from "@/lib/utils/fetchData"
 import { addDoc, collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase/clientApp"
 import { validateCollectionName } from "@/lib/validations/validation"
+import axios from "axios"
 
 
 // Get or Create a user
@@ -35,15 +36,22 @@ export async function getOrCreateUser(userDetails: any) {
 }
 
 // Get API key from firebase
-export async function getApiKey(userId: string) {
-    const docRef = doc(db, 'users', userId);
+interface UserData {
+    apiKey: string;
+}
+
+export async function getApiKey(id: string) {
+    const docRef = doc(db, 'users', id);
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
-        const userData = docSnap.data();
+        const userData = docSnap.data() as UserData;
+        if (!userData.apiKey) {
+            throw new Error('API key not found for user');
+        }
         return userData.apiKey;
     }
-    return "";
+    throw new Error('User not found');
 }
 
 // Check if organisation ID exists and is valid
@@ -59,10 +67,11 @@ export async function isValidOrganisation(organisationId: string) {
 // Create server action to add post to the database
 export async function addCollection(formData: FormData){
     const collection_name = formData.get('collection_name')
+    const apiKey = formData.get('apiKey')
     const collectionData = {
         user_id: '123',// This would be replaced by the actual user id from authentication
         collection_name: validateCollectionName(collection_name),
-        collection_id: await createCollection(),
+        collection_id: await createCollection(apiKey),
         created_at: serverTimestamp(),
     }
     // Create a collection from the database instance

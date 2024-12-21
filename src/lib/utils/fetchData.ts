@@ -1,9 +1,11 @@
 import axiosInstance from "./axiosConfig";
 
 // Create a collection
-export async function createCollection(){
+export async function createCollection(apiKey : string){
     const url = `${axiosInstance.defaults.baseURL}/create/`
-    const response = await axiosInstance.post(url)
+    axiosInstance.defaults.headers.common['Authorization'] = `Token ${apiKey}`
+    console.log(axiosInstance.defaults.headers.common)
+    const response = await axiosInstance.post(url, {})
     console.log(response.data)
     return response.data.collection_id
 }

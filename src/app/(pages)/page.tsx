@@ -36,7 +36,7 @@ export default function Home() {
 
       if(isValidUser){
         localStorage.setItem('organisationId', organisationId);
-        // router.replace('/home');
+        router.replace('/home');
       } else {
         window.location.href = 'https://console.wetrocloud.com';
       }
