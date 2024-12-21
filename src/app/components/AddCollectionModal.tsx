@@ -57,6 +57,7 @@ export default function AddCollectionModal({isAddCollectionModal, existingCollec
         let apiKey = await setAxiosApiKey();
         if (!apiKey) return;
         const formData = new FormData();
+        formData.append("userId", localStorage.getItem('organisationId') || '');
         formData.append('collection_name', collectionName);
         formData.append('apiKey', apiKey);
         const collectionList = await addCollection(formData)

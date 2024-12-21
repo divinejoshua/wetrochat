@@ -68,9 +68,10 @@ export async function isValidOrganisation(organisationId: string) {
 export async function addCollection(formData: FormData){
     const collection_name = formData.get('collection_name')
     const apiKey = formData.get('apiKey')
+    const userId = formData.get('userId')
     const collection_id = await createCollection(apiKey)
     const collectionData = {
-        user_id: '123',// This would be replaced by the actual user id from authentication
+        user_id: userId,// This would be replaced by the actual user id from authentication
         collection_name: validateCollectionName(collection_name),
         collection_id: collection_id,
         created_at: serverTimestamp(),

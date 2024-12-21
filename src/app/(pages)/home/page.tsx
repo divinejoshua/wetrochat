@@ -15,16 +15,20 @@ export default function HomePage() {
   //Data
   const [collectionList, setcollectionList] = useState<any>([])
   const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
-  useEffect(() => {
-    async function fetchCollections() {
-      const collectionList = await getCollections()
-      setcollectionList(collectionList)
-    }
-    fetchCollections()
 
+
+  async function fetchCollections() {
+    const collectionList = await getCollections()
+    let orderedList = collectionList.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    setcollectionList(orderedList)
+    
+  }
+
+  useEffect(() => {
+    fetchCollections()
     // Create a new collection
-   
-  }, [])
+  }, [isAddCollectionModal])
+  
 
   return (
     <main className="mx-auto main-container">
