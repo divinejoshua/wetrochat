@@ -16,20 +16,19 @@ export default function HomePage() {
   const [collectionList, setcollectionList] = useState<any>([])
   const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
 
-  useEffect(() => {
-    async function fetchCollections() {
-      const collectionList = await getCollections()
-      setcollectionList(collectionList)
-    }
-    fetchCollections()
 
+  async function fetchCollections() {
+    const collectionList = await getCollections()
+    let orderedList = collectionList.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    setcollectionList(orderedList)
+    
+  }
+
+  useEffect(() => {
+    fetchCollections()
     // Create a new collection
-    // async function createCollection() {
-    //   const collectionList = await addCollection()
-    //   setisAddCollectionModal(false)
-    // }
-    // createCollection()
-  }, [])
+  }, [isAddCollectionModal])
+  
 
   return (
     <main className="mx-auto main-container">
@@ -53,7 +52,7 @@ export default function HomePage() {
           </div>
 
           {/* Render Collections */}
-          {collectionList.length && collectionList.map((collection : any) => (
+          {collectionList.length > 0 && collectionList.map((collection : any) => (
             <Link  key={collection.id} href={`/collection/${collection.id}`}>
               <div
                 className="p-4 bg-white shadow rounded-md border border-gray-200 h-40 truncate"
@@ -62,7 +61,7 @@ export default function HomePage() {
                   {collection.collection_name}
                 </h2>
                 <p className="text-gray-500 text-sm">
-                  {collection.resources} resources
+                  {`${collection.resource_count} resource${collection.resource_count == 1 ? '' : 's'}`}
                 </p>
               </div>
             </Link>
@@ -77,7 +76,7 @@ export default function HomePage() {
     {
         isAddCollectionModal &&
         createPortal(
-            <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName="" setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={() => {}} />,
+            <AddCollectionModal isAddCollectionModal={isAddCollectionModal} existingCollectionName="" collectionId="" setisAddCollectionModal={setisAddCollectionModal} setExistingCollection={() => {}}  fetchCollections={fetchCollections}/>,
             document.body
     )}
     </main>

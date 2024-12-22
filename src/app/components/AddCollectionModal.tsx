@@ -4,14 +4,16 @@ import Image from 'next/image'
 import closeIcon from '@/app/assets/images/close-add-resource-modal-icon.png'
 import { useEffect, useState } from 'react';
 import circleLoaderIcon from "@/app/assets/images/circle-loader-icon.svg"
+import { addCollection, editCollectionName, getApiKey } from '../actions';
 
 
-export default function AddCollectionModal({isAddCollectionModal, existingCollectionName, setisAddCollectionModal, setExistingCollection} :{ isAddCollectionModal : boolean, existingCollectionName : string, setisAddCollectionModal : Function, setExistingCollection : Function}) {
+export default function AddCollectionModal({isAddCollectionModal, existingCollectionName, collectionId, setisAddCollectionModal, setExistingCollection, fetchCollections} :{ isAddCollectionModal : boolean, existingCollectionName : string, collectionId : string, setisAddCollectionModal : Function, setExistingCollection : Function, fetchCollections: Function}) {
 
     //Data
     const [loading, setloading] = useState<boolean>(false)
     const [errorMessage, seterrorMessage] = useState<string>("")
     const [collectionName, setcollectionName] = useState<string>("")
+    
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -20,12 +22,18 @@ export default function AddCollectionModal({isAddCollectionModal, existingCollec
         setloading(true);
         try {
           if(existingCollectionName){
-            setExistingCollection(collectionName)
+            // Update collection name
+            await editCollectionName(collectionId, collectionName).then(()=>{ setExistingCollection(collectionName) })
+          } else{
+            createCollection().then(()=>{
+              fetchCollections()
+            })
+
           }
           console.log("Added collection name")
           setisAddCollectionModal(false)
 
-         
+
             // Add your form submission logic here
         } catch (error) {
             seterrorMessage("An error occurred");
@@ -35,6 +43,29 @@ export default function AddCollectionModal({isAddCollectionModal, existingCollec
         }
     };
 
+
+    // Get API key from Firebase and set in Axios headers
+    const setAxiosApiKey = async () => {
+      try {
+          let apiKey = await getApiKey(localStorage.getItem('organisationId') || '');
+          return apiKey
+
+      } catch (error) {
+        console.error('Error setting API key:', error);
+      }
+    };
+
+    // Create collection on the server
+    async function createCollection() {
+        let apiKey = await setAxiosApiKey();
+        if (!apiKey) return;
+        const formData = new FormData();
+        formData.append("userId", localStorage.getItem('organisationId') || '');
+        formData.append('collection_name', collectionName);
+        formData.append('apiKey', apiKey);
+        await addCollection(formData)
+    }
+    
   useEffect(() => {
     if(existingCollectionName){
       setcollectionName(existingCollectionName)

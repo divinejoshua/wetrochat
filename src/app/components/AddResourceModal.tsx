@@ -4,10 +4,12 @@ import Image from 'next/image'
 import closeIcon from '@/app/assets/images/close-add-resource-modal-icon.png'
 import { use, useEffect, useState } from 'react';
 import circleLoaderIcon from "@/app/assets/images/circle-loader-icon.svg"
-import { isValidURL, isValidYouTubeURL } from '../utils/generic';
+import { getPageTitle, isValidURL, isValidYouTubeURL } from '../utils/generic';
+import axios from 'axios';
+import { addResource, getApiKey, updateResourceNumber } from '../actions';
 
 
-export default function AddResourceModal({isAddResourceModal, setisAddResourceModal} :{ isAddResourceModal : boolean, setisAddResourceModal : Function}) {
+export default function AddResourceModal({isAddResourceModal, collectionId, setisAddResourceModal, getResourceList} :{ isAddResourceModal : boolean, collectionId : string, setisAddResourceModal : Function, getResourceList : Function}) {
 
     //Data
     const [loading, setloading] = useState<boolean>(false)
@@ -16,11 +18,16 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
     const [activeTab, setActiveTab] = useState("web"); // Track active tab
     const [link, setLink] = useState(""); // Input value
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
       if(errorMessage) return;
+      if(loading) return;
+      if(!link) return
+      if(!link.trim().length) return
         setloading(true)
         try {
             console.log("Added resource")
+            await addResourceToDatabase()
             setisAddResourceModal(false)
             // Add your form submission logic here
         } catch (error) {
@@ -29,6 +36,61 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
             setloading(false);
             seterrorMessage("")
         }
+    };
+
+
+    //Fetch page title
+    const fetchPageTitle = async (url: string) => {
+      try {
+
+        const formData = new URLSearchParams();
+        formData.append('url', url);
+
+        const response = await axios.post('/api/resource', formData, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+        return response.data.title;
+      } catch (error) {
+        console.error('Error fetching page title:', error);
+        throw new Error('Failed to fetch page title');
+      }
+    };
+    // Add resource
+    const addResourceToDatabase = async () => {
+      // Get page title
+      let pageTitle = await fetchPageTitle(link)
+
+      let apiKey = await setAxiosApiKey();
+      if (!apiKey) {
+        seterrorMessage("An error occurred");
+        return
+      };
+
+      const formData = new FormData();
+      formData.append("collectionId", collectionId);
+      formData.append("url", link);
+      formData.append("type", activeTab.toLowerCase());
+      formData.append("name", pageTitle);
+      formData.append("apiKey", apiKey);
+
+      await addResource(formData).then(async()=>{
+        await updateResourceNumber(collectionId, 1)
+        await getResourceList()
+       })
+    }
+
+
+    // Get API key from Firebase and set in Axios headers
+    const setAxiosApiKey = async () => {
+      try {
+          let apiKey = await getApiKey(localStorage.getItem('organisationId') || '');
+          return apiKey
+
+      } catch (error) {
+        console.error('Error setting API key:', error);
+      }
     };
 
     useEffect(() => {
@@ -51,7 +113,7 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
         
         {/* Resource Options */}
         <div className="flex justify-between mb-6">
-          {["Files", "Web", "Youtube"].map((tab) => (
+          {["File", "Web", "Youtube"].map((tab) => (
             <span key={tab}>
               <button
                 onClick={() => setActiveTab(tab.toLowerCase())}
@@ -61,7 +123,7 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
                     : "text-gray-500"
                 }`}
               >
-                {tab === "Files" && "📄"}
+                {tab === "File" && "📄"}
                 {tab === "Web" && "🌐"}
                 {tab === "Youtube" && "▶️"}
                 <span>{tab}</span>
@@ -70,9 +132,11 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
           ))}
         </div>
 
-        {/* Input Field */}
+        <form onSubmit={handleSubmit}>
+          {/* Input Field */}
           <input
             type="text"
+            onClick={()=> seterrorMessage("")}
             placeholder={`Enter ${activeTab} link`}
             value={link}
             onChange={(e) => setLink(e.target.value)}
@@ -81,29 +145,32 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
 
           <p className='text-red-500'>{errorMessage}</p>
 
-        {/* Action Buttons */}
-        <div className="flex justify-end gap-4">
-          {/* Loader image */}
-          {loading &&
-            <Image
-                src={circleLoaderIcon}
-                alt="Wetrocloud"
-                className="circle-loader-icon mr-3 float-right animate-spin"
-              />
-           }
-          <button
-            onClick={() => setisAddResourceModal(false)}
-            className="py-2 px-4 rounded border border-gray-300 text-gray-500"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => handleSubmit()}
-            className="py-2 px-4 rounded bg-blue-600 text-white"
-          >
-            Add
-          </button>
-        </div>
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-4">
+            {/* Loader image */}
+            {loading &&
+              <Image
+                  src={circleLoaderIcon}
+                  alt="Wetrocloud"
+                  className="circle-loader-icon mr-3 float-right animate-spin"
+                />
+            }
+            <button
+              type="button"
+              onClick={() => setisAddResourceModal(false)}
+              className="py-2 px-4 rounded border border-gray-300 text-gray-500"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="py-2 px-4 rounded bg-blue-600 text-white"
+            >
+              Add
+            </button>
+          </div>
+        </form>
       </div>
 
     </div>

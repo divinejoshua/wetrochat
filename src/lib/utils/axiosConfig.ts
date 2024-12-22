@@ -1,11 +1,8 @@
+import { getApiKey } from "@/app/actions";
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://api.wetrocloud.com/v1",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": process.env.WETROCLOUD_API_KEY,
-
-  },
+  baseURL: process.env.NEXT_PUBLIC_WETROCLOUD_BASE_URL,
 });
+
 export default axiosInstance;
