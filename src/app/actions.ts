@@ -3,6 +3,7 @@ import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, s
 import { db } from "@/lib/firebase/clientApp"
 import { validateCollectionName } from "@/lib/validations/validation"
 import axios from "axios"
+import { getCollectionIdFromUrl } from "@/lib/utils/getCollection"
 
 
 // Get or Create a user
@@ -109,6 +110,7 @@ export async function getCollections(){
             created_at: doc.data().created_at?.toDate().toISOString(),
         }
     })
+    // console.log(collections)
     return collections
 }
 // Get collection details by ID
@@ -207,3 +209,19 @@ export async function getResourcesByCollectionId(collectionId: string) {
         });
     return resources;
 }
+
+export async function getCollectionIdFromFirebase():Promise<string|null>{
+    // Get the collection id from the url
+    const collectionIdFirebase = getCollectionIdFromUrl()
+    // const collectionIdFirebase = 'M0GttDiZtKQHEuL5Mzb4'// Hard Coded collection_id
+    // Get the collection from the database
+    const docRef = doc(db, 'collections', collectionIdFirebase)
+    const documentSnapshots = await getDoc(docRef)
+    if(documentSnapshots.exists()){
+        const collection = documentSnapshots.data()
+        const collectionId = collection.collection_id
+        return collectionId
+    }
+    return null
+}
+
