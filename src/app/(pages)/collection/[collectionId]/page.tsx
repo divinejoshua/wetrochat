@@ -45,7 +45,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
     // handle remove resource
     const handleRemoveResource = (id : any) => {
       
-      setresourceList(resourceList.filter(resource => resource.id !== id));
+      setresourceList(resourceList.filter((resource : any) => resource.id !== id));
       setactiveResource({});
       setisRemoveResourceModal(false);
     }

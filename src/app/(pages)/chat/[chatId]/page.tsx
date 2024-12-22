@@ -3,6 +3,7 @@ import { getApiKey, getCollectionById, getCollectionIdFromFirebase } from "@/app
 import { ChatInput } from "@/app/components/ChatInput";
 import { ChatMessages } from "@/app/components/ChatMessages";
 import { queryCollection } from "@/lib/utils/fetchData";
+import { useRouter } from "next/navigation";
 import React, { use, useEffect, useState } from "react";
 import {useImmer} from "use-immer";
 
@@ -14,8 +15,9 @@ interface Message {
   error: boolean;
 }
 
-export default function ChatPage({ params }: { params: Promise<{ collectionId: string }> }) {
+export default function ChatPage({ params }: { params: Promise<{ chatId: string }> }) {
   // Hooks
+  const router = useRouter()
   const { chatId } = use(params);
 
   // const [collectionId, setCollectionId] = useState<string|null>(null)
