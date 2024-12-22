@@ -45,7 +45,7 @@ export default function ChatPage({ params }: { params: Promise<{ collectionId: s
         throw new Error('API key not found');
       }
       // query the collection
-      const response = await queryCollection(chatId,trimmedMessage, apiKey)
+      const response = await queryCollection(chatId,trimmedMessage, messages, apiKey)
       // add the response to the messages by mutating the state directly through use Immer
       setMessages(draft => {
         let lastMessage = draft[draft.length - 1]
@@ -92,7 +92,7 @@ export default function ChatPage({ params }: { params: Promise<{ collectionId: s
 
     return () => {
     }
-  })
+  },[])
   return (
     <div className="min-h-screen flex flex-col items-center p-6 font-sans">
       {/* Header */}

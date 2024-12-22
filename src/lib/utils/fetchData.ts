@@ -22,13 +22,14 @@ export async function insertResource(collectionId:string,resource:string,type:st
 }
 
 // Query a collection
-export async function queryCollection(collectionId:any,query:string, apiKey : string){
+export async function queryCollection(collectionId:any,query:string, messages : any[], apiKey : string){
     if (typeof collectionId === 'string') {
-    const url = `${axiosInstance.defaults.baseURL}/query/`
+    const url = `${axiosInstance.defaults.baseURL}/chat/`
     axiosInstance.defaults.headers.common['Authorization'] = `Token ${apiKey}`
     const payload = {
         collection_id:collectionId,
-        request_query:query
+        message:query,
+        chat_history:messages
     }
     const response = await axiosInstance.post(url,payload)
     console.log(response.data)
