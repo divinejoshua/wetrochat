@@ -63,8 +63,7 @@ export default function AddCollectionModal({isAddCollectionModal, existingCollec
         formData.append("userId", localStorage.getItem('organisationId') || '');
         formData.append('collection_name', collectionName);
         formData.append('apiKey', apiKey);
-        const collectionList = await addCollection(formData)
-        // setisAddCollectionModal(false)
+        await addCollection(formData)
     }
     
   useEffect(() => {

@@ -6,7 +6,7 @@ import { use, useEffect, useState } from 'react';
 import circleLoaderIcon from "@/app/assets/images/circle-loader-icon.svg"
 import { getPageTitle, isValidURL, isValidYouTubeURL } from '../utils/generic';
 import axios from 'axios';
-import { addResource, getApiKey } from '../actions';
+import { addResource, getApiKey, updateResourceNumber } from '../actions';
 
 
 export default function AddResourceModal({isAddResourceModal, collectionId, setisAddResourceModal} :{ isAddResourceModal : boolean, collectionId : string, setisAddResourceModal : Function}) {
@@ -21,6 +21,9 @@ export default function AddResourceModal({isAddResourceModal, collectionId, seti
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       if(errorMessage) return;
+      if(loading) return;
+      if(!link) return
+      if(!link.trim().length) return
         setloading(true)
         try {
             console.log("Added resource")
@@ -72,7 +75,9 @@ export default function AddResourceModal({isAddResourceModal, collectionId, seti
       formData.append("name", pageTitle);
       formData.append("apiKey", apiKey);
 
-      await addResource(formData)
+      await addResource(formData).then(async()=>{
+        await updateResourceNumber(collectionId, 1)
+       })
     }
 
 
@@ -127,10 +132,10 @@ export default function AddResourceModal({isAddResourceModal, collectionId, seti
         </div>
 
         <form onSubmit={handleSubmit}>
-
-        {/* Input Field */}
+          {/* Input Field */}
           <input
             type="text"
+            onClick={()=> seterrorMessage("")}
             placeholder={`Enter ${activeTab} link`}
             value={link}
             onChange={(e) => setLink(e.target.value)}
@@ -139,31 +144,31 @@ export default function AddResourceModal({isAddResourceModal, collectionId, seti
 
           <p className='text-red-500'>{errorMessage}</p>
 
-        {/* Action Buttons */}
-        <div className="flex justify-end gap-4">
-          {/* Loader image */}
-          {loading &&
-            <Image
-                src={circleLoaderIcon}
-                alt="Wetrocloud"
-                className="circle-loader-icon mr-3 float-right animate-spin"
-              />
-           }
-          <button
-            onClick={() => setisAddResourceModal(false)}
-            className="py-2 px-4 rounded border border-gray-300 text-gray-500"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="py-2 px-4 rounded bg-blue-600 text-white"
-          >
-            Add
-          </button>
-        </div>
-
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-4">
+            {/* Loader image */}
+            {loading &&
+              <Image
+                  src={circleLoaderIcon}
+                  alt="Wetrocloud"
+                  className="circle-loader-icon mr-3 float-right animate-spin"
+                />
+            }
+            <button
+              type="button"
+              onClick={() => setisAddResourceModal(false)}
+              className="py-2 px-4 rounded border border-gray-300 text-gray-500"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="py-2 px-4 rounded bg-blue-600 text-white"
+            >
+              Add
+            </button>
+          </div>
         </form>
       </div>
 

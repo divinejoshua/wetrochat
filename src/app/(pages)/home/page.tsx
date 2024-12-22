@@ -61,7 +61,7 @@ export default function HomePage() {
                   {collection.collection_name}
                 </h2>
                 <p className="text-gray-500 text-sm">
-                  {collection.resources} resources
+                  {`${collection.resource_count} resource${collection.resource_count == 1 ? '' : 's'}`}
                 </p>
               </div>
             </Link>

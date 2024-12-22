@@ -74,6 +74,7 @@ export async function addCollection(formData: FormData){
         user_id: userId,// This would be replaced by the actual user id from authentication
         collection_name: validateCollectionName(collection_name),
         collection_id: collection_id,
+        resource_count: 0,
         created_at: serverTimestamp(),
     }
     // Create a document with collection_id as the document ID
@@ -168,4 +169,24 @@ export async function addResource(formData: FormData) {
     await setDoc(docRef, resourceData);
 
     return { message: 'Resource added successfully', id: docRef.id };
+}
+
+// Update the resource count in the collection table
+export async function updateResourceNumber(collectionId: string, incrementBy: number) {
+    const docRef = doc(db, 'collections', collectionId);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+        throw new Error('Collection not found');
+    }
+
+    const currentResourceCount = docSnap.data().resource_count || 0;
+    const newResourceCount = currentResourceCount + incrementBy;
+
+    await setDoc(docRef, {
+        resource_count: newResourceCount,
+        updated_at: serverTimestamp(),
+    }, { merge: true });
+
+    return { message: 'Resource count updated successfully', newResourceCount };
 }
