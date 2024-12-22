@@ -3,7 +3,7 @@ import { getOrCreateUser } from "@/app/actions";
 import { generateRandomText } from "@/app/utils/generic";
 
 // POST request
-export async function POST (req: NextRequest, res : NextResponse) {
+export async function POST (req: NextRequest) {
 
     let response : any
 

@@ -2,7 +2,7 @@ import { JSDOM } from 'jsdom';
 import { NextRequest, NextResponse } from "next/server";
 
 // POST request
-export async function POST (req: NextRequest, res : NextResponse) {
+export async function POST (req: NextRequest) {
 
     //Get the request body
     let request = await req.formData()
