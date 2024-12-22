@@ -9,7 +9,7 @@ import axios from 'axios';
 import { addResource, getApiKey, updateResourceNumber } from '../actions';
 
 
-export default function AddResourceModal({isAddResourceModal, collectionId, setisAddResourceModal} :{ isAddResourceModal : boolean, collectionId : string, setisAddResourceModal : Function}) {
+export default function AddResourceModal({isAddResourceModal, collectionId, setisAddResourceModal, getResourceList} :{ isAddResourceModal : boolean, collectionId : string, setisAddResourceModal : Function, getResourceList : Function}) {
 
     //Data
     const [loading, setloading] = useState<boolean>(false)
@@ -77,6 +77,7 @@ export default function AddResourceModal({isAddResourceModal, collectionId, seti
 
       await addResource(formData).then(async()=>{
         await updateResourceNumber(collectionId, 1)
+        await getResourceList()
        })
     }
 

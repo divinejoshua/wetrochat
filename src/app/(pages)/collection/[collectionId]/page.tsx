@@ -13,7 +13,7 @@ import { createPortal } from "react-dom";
 import RemoveResourceModal from "@/app/components/RemoveResourceModal";
 import AddResourceModal from "@/app/components/AddResourceModal";
 import DeleteCollectionModal from "@/app/components/DeleteCollectionModal";
-import { editCollectionName, getCollectionById } from "@/app/actions";
+import { editCollectionName, getCollectionById, getResourcesByCollectionId } from "@/app/actions";
 
 
 export default function CollectionPage({ params }: { params: Promise<{ collectionId: string }> }) {
@@ -22,12 +22,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
   const { collectionId } = use(params);
 
   // DATA
-  const [resourceList, setresourceList] = useState<any>([
-    { id: 1, type: "link", name: "How to stay away from drugs - Wikipedia", icon: "🔗" },
-    { id: 2, type: "link", name: "Maintaining a healthy lifestyle | Medium.com", icon: "🔗" },
-    { id: 3, type: "video", name: "10 best ways to find new habits", icon: "▶️" },
-    { id: 4, type: "pdf", name: "Connect with your mind.pdf", icon: "📄" },
-  ])
+  const [resourceList, setresourceList] = useState<any>([])
   const [isCopied, setisCopied] = useState<boolean>(false);
   const [isAddCollectionModal, setisAddCollectionModal] = useState<boolean>(false)
   const [isRemoveResourceModal, setisRemoveResourceModal] = useState<boolean>(false)
@@ -65,7 +60,13 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
       let collectionDetails = await getCollectionById(collectionId)
       setcollectionName(collectionDetails.collection_name)
     }
-    
+
+
+    const getResourceList = async () => {
+      let resource = await getResourcesByCollectionId(collectionId)
+      let orderedList = resource.sort((a, b) => new Date(b.date_added).getTime() - new Date(a.date_added).getTime())
+      setresourceList(orderedList)
+    }
   //Check for collection ID
   useEffect(() => {
     if(!collectionId){
@@ -73,6 +74,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
     }
 
     getCollection()
+    getResourceList()
 
 
     return () => {
@@ -114,23 +116,25 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
 
         {/* Resources Section */}
         <div>
-          <h2 className="text-lg font-semibold mb-3">My resources</h2>
+          <h2 className="text-lg font-semibold mb-3">My resources ({resourceList.length})</h2>
           <ul className="space-y-4">
             {resourceList.map((resource) => (
               <li
                 key={resource.id}
                 className="flex items-center justify-between border-b pb-2"
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">{resource.icon}</span>
-                  <span className="text-gray-700">{resource.name}</span>
-                </div>
-                <button onClick={()=> {
+                <a href={resource.url} target="_blank">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{resource.type == "web" ? "🔗" : resource.type == "youtube" ? "▶️"  : "📄"}</span>
+                    <span className="text-gray-700">{resource.name}</span>
+                  </div>
+                </a>
+                {/* <button onClick={()=> {
                   setactiveResource({id : resource.id, resourceName : resource.name})
                   setisRemoveResourceModal(true);
                 }} className="text-gray-400 hover:text-gray-600">
                   ✕
-                </button>
+                </button> */}
               </li>
             ))}
           </ul>
@@ -144,7 +148,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
         {
             isAddResourceModal &&
             createPortal(
-                <AddResourceModal isAddResourceModal={isAddResourceModal} collectionId={collectionId} setisAddResourceModal={setisAddResourceModal}/>,
+                <AddResourceModal isAddResourceModal={isAddResourceModal} collectionId={collectionId} setisAddResourceModal={setisAddResourceModal} getResourceList={getResourceList}/>,
                 document.body
         )}
 
@@ -171,6 +175,8 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
                 <DeleteCollectionModal isDeleteCollectioneModal={isDeleteCollectioneModal} collectionId={collectionId} setisDeleteCollectioneModal={setisDeleteCollectioneModal}/>,
                 document.body
         )}
+
+
 
     </main>
   )

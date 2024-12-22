@@ -190,3 +190,20 @@ export async function updateResourceNumber(collectionId: string, incrementBy: nu
 
     return { message: 'Resource count updated successfully', newResourceCount };
 }
+
+
+// Get the list of resources by collection ID
+export async function getResourcesByCollectionId(collectionId: string) {
+    const resourceRef = collection(db, 'resources');
+    const querySnapshot = await getDocs(resourceRef);
+    const resources = querySnapshot.docs
+        .filter(doc => doc.data().collection_id === collectionId)
+        .map(doc => {
+            return {
+                ...doc.data(),
+                id: doc.id,
+                date_added: doc.data().date_added?.toDate().toISOString(),
+            };
+        });
+    return resources;
+}
