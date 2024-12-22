@@ -4,7 +4,8 @@ import Image from 'next/image'
 import closeIcon from '@/app/assets/images/close-add-resource-modal-icon.png'
 import { use, useEffect, useState } from 'react';
 import circleLoaderIcon from "@/app/assets/images/circle-loader-icon.svg"
-import { isValidURL, isValidYouTubeURL } from '../utils/generic';
+import { getPageTitle, isValidURL, isValidYouTubeURL } from '../utils/generic';
+import axios from 'axios';
 
 
 export default function AddResourceModal({isAddResourceModal, setisAddResourceModal} :{ isAddResourceModal : boolean, setisAddResourceModal : Function}) {
@@ -16,11 +17,13 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
     const [activeTab, setActiveTab] = useState("web"); // Track active tab
     const [link, setLink] = useState(""); // Input value
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
       if(errorMessage) return;
         setloading(true)
         try {
             console.log("Added resource")
+            await addResource()
             setisAddResourceModal(false)
             // Add your form submission logic here
         } catch (error) {
@@ -31,6 +34,33 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
         }
     };
 
+
+    //Fetch page title
+    const fetchPageTitle = async (url: string) => {
+      try {
+
+        const formData = new URLSearchParams();
+        formData.append('url', url);
+
+        const response = await axios.post('/api/resource', formData, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+        return response.data.title;
+      } catch (error) {
+        console.error('Error fetching page title:', error);
+        throw new Error('Failed to fetch page title');
+      }
+    };
+    // Add resource
+    const addResource = async () => {
+      // Get page title
+      let pageTitle = await fetchPageTitle(link)
+      console.log(pageTitle)
+
+      
+    }
     useEffect(() => {
       let error = "";
       if (activeTab === "youtube" && !isValidYouTubeURL(link)) {
@@ -51,7 +81,7 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
         
         {/* Resource Options */}
         <div className="flex justify-between mb-6">
-          {["Files", "Web", "Youtube"].map((tab) => (
+          {["File", "Web", "Youtube"].map((tab) => (
             <span key={tab}>
               <button
                 onClick={() => setActiveTab(tab.toLowerCase())}
@@ -61,7 +91,7 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
                     : "text-gray-500"
                 }`}
               >
-                {tab === "Files" && "📄"}
+                {tab === "File" && "📄"}
                 {tab === "Web" && "🌐"}
                 {tab === "Youtube" && "▶️"}
                 <span>{tab}</span>
@@ -69,6 +99,8 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
             </span>
           ))}
         </div>
+
+        <form onSubmit={handleSubmit}>
 
         {/* Input Field */}
           <input
@@ -98,12 +130,14 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
             Cancel
           </button>
           <button
-            onClick={() => handleSubmit()}
+            type="submit"
             className="py-2 px-4 rounded bg-blue-600 text-white"
           >
             Add
           </button>
         </div>
+
+        </form>
       </div>
 
     </div>

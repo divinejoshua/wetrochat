@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwtDecode } from "jwt-decode";
 import { getOrCreateUser } from "@/app/actions";
 import { generateRandomText } from "@/app/utils/generic";
 

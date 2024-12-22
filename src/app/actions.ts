@@ -1,4 +1,4 @@
-import { createCollection } from "@/lib/utils/fetchData"
+import { createCollection, insertResource } from "@/lib/utils/fetchData"
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase/clientApp"
 import { validateCollectionName } from "@/lib/validations/validation"
@@ -143,4 +143,23 @@ export async function editCollectionName(collectionId: string, newCollectionName
     }, { merge: true });
 
     return { message: 'Collection name updated successfully' };
+}
+
+// Add a resource to the resources table
+export async function addResource(collectionId: string, url: string, type: string, name: string) {
+    const resourceData = {
+        collection_id: collectionId,
+        url: url,
+        type: type,
+        name: name,
+        date_added: serverTimestamp(),
+    };
+
+    // await insertResource(apiKey)
+
+    // Create a document in the resources collection
+    const docRef = doc(collection(db, 'resources'));
+    await setDoc(docRef, resourceData);
+
+    return { message: 'Resource added successfully', id: docRef.id };
 }
