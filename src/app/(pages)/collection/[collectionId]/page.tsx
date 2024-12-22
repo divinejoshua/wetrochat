@@ -144,7 +144,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
         {
             isAddResourceModal &&
             createPortal(
-                <AddResourceModal isAddResourceModal={isAddResourceModal} setisAddResourceModal={setisAddResourceModal}/>,
+                <AddResourceModal isAddResourceModal={isAddResourceModal} collectionId={collectionId} setisAddResourceModal={setisAddResourceModal}/>,
                 document.body
         )}
 

@@ -146,7 +146,13 @@ export async function editCollectionName(collectionId: string, newCollectionName
 }
 
 // Add a resource to the resources table
-export async function addResource(collectionId: string, url: string, type: string, name: string) {
+export async function addResource(formData: FormData) {
+    const collectionId = formData.get('collectionId') as string;
+    const url = formData.get('url') as string;
+    const type = formData.get('type') as string;
+    const name = formData.get('name') as string;
+    const apiKey = formData.get('apiKey') as string;
+
     const resourceData = {
         collection_id: collectionId,
         url: url,
@@ -155,7 +161,7 @@ export async function addResource(collectionId: string, url: string, type: strin
         date_added: serverTimestamp(),
     };
 
-    // await insertResource(apiKey)
+    await insertResource(collectionId, url, type, apiKey)
 
     // Create a document in the resources collection
     const docRef = doc(collection(db, 'resources'));

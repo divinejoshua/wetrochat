@@ -5,7 +5,6 @@ export async function createCollection(apiKey : string){
     const url = `${axiosInstance.defaults.baseURL}/create/`
     axiosInstance.defaults.headers.common['Authorization'] = `Token ${apiKey}`
     const response = await axiosInstance.post(url, {})
-    console.log(response.data)
     return response.data.collection_id
 }
 
@@ -19,7 +18,6 @@ export async function insertResource(collectionId:string,resource:string,type:st
         type:type
     }
     const response = await axiosInstance.post(url,payload)
-    console.log(response.data)
     return response.data
 }
 

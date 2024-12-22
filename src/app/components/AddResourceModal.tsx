@@ -6,9 +6,10 @@ import { use, useEffect, useState } from 'react';
 import circleLoaderIcon from "@/app/assets/images/circle-loader-icon.svg"
 import { getPageTitle, isValidURL, isValidYouTubeURL } from '../utils/generic';
 import axios from 'axios';
+import { addResource, getApiKey } from '../actions';
 
 
-export default function AddResourceModal({isAddResourceModal, setisAddResourceModal} :{ isAddResourceModal : boolean, setisAddResourceModal : Function}) {
+export default function AddResourceModal({isAddResourceModal, collectionId, setisAddResourceModal} :{ isAddResourceModal : boolean, collectionId : string, setisAddResourceModal : Function}) {
 
     //Data
     const [loading, setloading] = useState<boolean>(false)
@@ -23,7 +24,7 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
         setloading(true)
         try {
             console.log("Added resource")
-            await addResource()
+            await addResourceToDatabase()
             setisAddResourceModal(false)
             // Add your form submission logic here
         } catch (error) {
@@ -54,13 +55,38 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
       }
     };
     // Add resource
-    const addResource = async () => {
+    const addResourceToDatabase = async () => {
       // Get page title
       let pageTitle = await fetchPageTitle(link)
-      console.log(pageTitle)
 
-      
+      let apiKey = await setAxiosApiKey();
+      if (!apiKey) {
+        seterrorMessage("An error occurred");
+        return
+      };
+
+      const formData = new FormData();
+      formData.append("collectionId", collectionId);
+      formData.append("url", link);
+      formData.append("type", activeTab.toLowerCase());
+      formData.append("name", pageTitle);
+      formData.append("apiKey", apiKey);
+
+      await addResource(formData)
     }
+
+
+    // Get API key from Firebase and set in Axios headers
+    const setAxiosApiKey = async () => {
+      try {
+          let apiKey = await getApiKey(localStorage.getItem('organisationId') || '');
+          return apiKey
+
+      } catch (error) {
+        console.error('Error setting API key:', error);
+      }
+    };
+
     useEffect(() => {
       let error = "";
       if (activeTab === "youtube" && !isValidYouTubeURL(link)) {
@@ -131,6 +157,7 @@ export default function AddResourceModal({isAddResourceModal, setisAddResourceMo
           </button>
           <button
             type="submit"
+            disabled={loading}
             className="py-2 px-4 rounded bg-blue-600 text-white"
           >
             Add
