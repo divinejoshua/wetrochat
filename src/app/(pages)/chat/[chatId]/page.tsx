@@ -82,7 +82,7 @@ export default function ChatPage({ params }: { params: Promise<{ chatId: string 
   const getCollection = async () => {
     let collectionInfo = await getCollectionById(chatId)
     setcollectionDetails(collectionInfo)
-    setcollectionName(collectionDetails.collection_name)
+    setcollectionName(collectionInfo.collection_name)
 
   }
 
