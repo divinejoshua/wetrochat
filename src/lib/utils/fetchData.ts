@@ -32,7 +32,6 @@ export async function queryCollection(collectionId:any,query:string, messages : 
         chat_history:messages
     }
     const response = await axiosInstance.post(url,payload)
-    console.log(response.data)
     return response.data
     }
     return null

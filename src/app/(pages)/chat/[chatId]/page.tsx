@@ -54,6 +54,8 @@ export default function ChatPage({ params }: { params: Promise<{ chatId: string 
         lastMessage.content += response.response
         lastMessage.loading = false
       });
+
+      router.replace("#end")
     } catch (err) {
       console.log(err);
       // set the loading to false
@@ -107,7 +109,7 @@ export default function ChatPage({ params }: { params: Promise<{ chatId: string 
       <ChatMessages messages={messages} />
       {/* Input Box Placeholder */}
       <ChatInput newMessage={newMessage} isLoading={isLoading} setNewMessage={setNewMessage} submitNewMessage={submitNewMessage} />
-      <p className="text-sm text-gray-300 mt-2">Powered by <a href="https://wetrocloud.com" target="_blank" className="text-sm text-gray-300 mt-2 underline">Wetrochat</a></p>
+      <p id="#end" className="text-sm text-gray-300 mt-2">Powered by <a href="https://wetrocloud.com" target="_blank" className="text-sm text-gray-300 mt-2 underline">Wetrochat</a></p>
     </div>
   );
 }
