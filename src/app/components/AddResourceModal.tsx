@@ -74,6 +74,7 @@ export default function AddResourceModal({isAddResourceModal, collectionId, seti
       formData.append("type", activeTab.toLowerCase());
       formData.append("name", pageTitle);
       formData.append("apiKey", apiKey);
+      formData.append("userId", localStorage.getItem('organisationId') || '');
 
       await addResource(formData).then(async()=>{
         await updateResourceNumber(collectionId, 1)

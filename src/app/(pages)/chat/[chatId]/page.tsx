@@ -70,7 +70,7 @@ export default function ChatPage({ params }: { params: Promise<{ chatId: string 
   // Get API key from Firebase and set in Axios headers
   const setAxiosApiKey = async () => {
     try {
-        let apiKey = await getApiKey(localStorage.getItem('organisationId') || '');
+        let apiKey = await getApiKey(collectionDetails.user_id);
         return apiKey
 
     } catch (error) {
@@ -79,8 +79,8 @@ export default function ChatPage({ params }: { params: Promise<{ chatId: string 
   };
 
   const getCollection = async () => {
-    let collectionDetails = await getCollectionById(chatId)
-    setcollectionDetails(collectionDetails)
+    let collectionInfo = await getCollectionById(chatId)
+    setcollectionDetails(collectionInfo)
     setcollectionName(collectionDetails.collection_name)
 
   }

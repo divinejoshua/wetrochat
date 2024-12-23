@@ -155,12 +155,14 @@ export async function addResource(formData: FormData) {
     const type = formData.get('type') as string;
     const name = formData.get('name') as string;
     const apiKey = formData.get('apiKey') as string;
+    const userId = formData.get('userId') as string;
 
     const resourceData = {
         collection_id: collectionId,
         url: url,
         type: type,
         name: name,
+        userId : userId,
         date_added: serverTimestamp(),
     };
 
