@@ -24,8 +24,8 @@ export function ChatMessages({messages}:{messages:Message[]}) {
                 <Markdown>{content}</Markdown>
               </div>
             ) : (
-                <div className="rounded-md ml-auto text-right mt-5">
-                <span className="bg-blue-50 border-blue-500 rounded p-5 text-gray-700 font-medium">
+                <div className=" ml-auto text-right mt-5">
+                <span className="rounded bg-blue-50 p-5 text-gray-700 font-medium inline-block max-w-lg">
                   {content}
                 </span>
               </div>
