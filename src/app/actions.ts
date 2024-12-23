@@ -98,20 +98,21 @@ export async function deleteCollectionById(collectionId: string) {
     return { message: 'Collection deleted successfully' };
 }
 
-export async function getCollections(){
+export async function getCollections(organisationId: string) {
     // Get the collection reference from the database
-    const collectionRef = collection(db, 'collections')
+    const collectionRef = collection(db, 'collections');
     // Get the documents from the collection
-    const documentSnapshots = await getDocs(collectionRef)
-    const collections = documentSnapshots.docs.map((doc) => {
-        return {
-            ...doc.data(),
-            id: doc.id,
-            created_at: doc.data().created_at?.toDate().toISOString(),
-        }
-    })
-    // console.log(collections)
-    return collections
+    const documentSnapshots = await getDocs(collectionRef);
+    const collections = documentSnapshots.docs
+        .filter(doc => doc.data().user_id === organisationId)
+        .map(doc => {
+            return {
+                ...doc.data(),
+                id: doc.id,
+                created_at: doc.data().created_at?.toDate().toISOString(),
+            };
+        });
+    return collections;
 }
 // Get collection details by ID
 export async function getCollectionById(collectionId: string) {

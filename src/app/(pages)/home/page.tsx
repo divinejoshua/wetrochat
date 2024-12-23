@@ -18,7 +18,8 @@ export default function HomePage() {
 
 
   async function fetchCollections() {
-    const collectionList = await getCollections()
+    let organisationId = localStorage.getItem('organisationId') || ''
+    const collectionList = await getCollections(organisationId)
     let orderedList = collectionList.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     setcollectionList(orderedList)
     
