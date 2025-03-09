@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getOrCreateUser } from "@/app/actions";
 import { generateRandomText } from "@/app/utils/generic";
 
+export const config = {
+    runtime: 'experimental-edge',
+  }
+
+
 // POST request
 export async function POST (req: NextRequest) {
 
