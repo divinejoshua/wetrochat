@@ -3,7 +3,7 @@ import { getOrCreateUser } from "@/app/actions";
 import { generateRandomText } from "@/app/utils/generic";
 
 export const config = {
-    runtime: 'experimental-edge',
+    runtime: 'edge',
   }
 
 

@@ -2,7 +2,7 @@ import { JSDOM } from 'jsdom';
 import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
-    runtime: 'experimental-edge',
+    runtime: 'edge',
   }
 
 // POST request
