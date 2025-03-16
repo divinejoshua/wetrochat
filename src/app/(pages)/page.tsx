@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { verifyText } from "../utils/generic";
-import { isValidOrganisation } from "../actions";
+import { getOrCreateUser, isValidOrganisation } from "../actions";
 
 
 export default function Home() {
@@ -27,6 +27,7 @@ export default function Home() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('access');
+    const apiKey = urlParams.get('key');
 
     if (token) {
       const organisationId = token.slice(100);
@@ -35,6 +36,13 @@ export default function Home() {
       let isValidUser = verifyText(truncatedToken);
 
       if(isValidUser){
+        const userDetails = {
+          organisationId: token.slice(100),
+          apiKey: apiKey,
+        }
+
+        getOrCreateUser(userDetails);
+
         localStorage.setItem('organisationId', organisationId);
         router.replace('/home');
       } else {
